@@ -10,4 +10,8 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use((req, res) => {
+  res.status(404).json({ error: "Página no encontrada." });
+});
+
 export default app;
