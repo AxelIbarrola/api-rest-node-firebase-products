@@ -1,5 +1,5 @@
 import db from "../config/firebase.js";
-import { collection, addDoc } from "firebase";
+import { collection, addDoc } from "firebase/firestone";
 
 const productsCollectionRef = collection(db, "products");
 
