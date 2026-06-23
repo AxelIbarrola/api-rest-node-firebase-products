@@ -3,6 +3,7 @@ import {
   getProductsByIdService,
   createProductsService,
   deleteProductsService,
+  updateProductsService,
 } from "../services/products.service.js";
 
 export const getAllProducts = async (req, res) => {
@@ -82,15 +83,47 @@ export const deleteProducts = async (req, res) => {
       return res.status(404).json({ message: "Producto no encontrado." });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Producto eliminado con éxito.",
-        product: deletedProduct,
-      });
+    res.status(200).json({
+      message: "Producto eliminado con éxito.",
+      product: deletedProduct,
+    });
   } catch (error) {
     res
       .status(500)
       .json({ error: "Error interno del servidor al procesar la solicitud." });
+  }
+};
+
+export const updateProducts = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, price, stock } = req.body;
+  const product = { title, description, price, stock };
+
+  if (!id || id.length !== 20) {
+    return res.status(400).json({ message: "Formato de id inválido." });
+  }
+
+  if (!title || !description || !price || stock === null) {
+    return res.status(400).json({
+      message:
+        "Ausencia de datos necesarios para actualizar un producto. Datos requeridos: title, description, price, stock",
+    });
+  }
+
+  try {
+    const updatedProduct = await updateProductsService(id, product);
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Producto no encontrado." });
+    }
+
+    res.status(200).json({
+      message: "Producto actualizado con éxito.",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error interno en el servidor al procesar la solicitud.",
+    });
   }
 };
