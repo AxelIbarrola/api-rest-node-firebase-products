@@ -75,7 +75,7 @@ export const updateProductsModel = async (id, product) => {
     return null;
   }
 
-  await updateDoc(docRef);
+  await updateDoc(docRef, product);
 
   return {
     id: snapshot.id,

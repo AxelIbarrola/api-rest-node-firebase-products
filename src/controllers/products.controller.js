@@ -96,19 +96,38 @@ export const deleteProducts = async (req, res) => {
 
 export const updateProducts = async (req, res) => {
   const { id } = req.params;
-  const { title, description, price, stock } = req.body;
-  const product = { title, description, price, stock };
 
   if (!id || id.length !== 20) {
     return res.status(400).json({ message: "Formato de id inválido." });
   }
 
-  if (!title || !description || !price || stock === null) {
+  if (!req.body) {
+    return res
+      .status(400)
+      .json({ message: "El cuerpo de la petición no puede estar vacío." });
+  }
+
+  const { title, description, price, stock } = req.body;
+
+  if (
+    !title ||
+    !description ||
+    !price ||
+    stock === null ||
+    stock === undefined
+  ) {
     return res.status(400).json({
       message:
         "Ausencia de datos necesarios para actualizar un producto. Datos requeridos: title, description, price, stock",
     });
   }
+
+  const product = {
+    title,
+    description,
+    price: Number(price),
+    stock: Number(stock),
+  };
 
   try {
     const updatedProduct = await updateProductsService(id, product);
@@ -122,6 +141,7 @@ export const updateProducts = async (req, res) => {
       product: updatedProduct,
     });
   } catch (error) {
+    console.error("❌ ERROR EN PUT:", error);
     res.status(500).json({
       error: "Error interno en el servidor al procesar la solicitud.",
     });
