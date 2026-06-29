@@ -1,5 +1,6 @@
 import express from "express";
 import productsRouter from "./src/routes/products.router.js";
+import authRouter from "./src/routes/aut.router.js";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/products", productsRouter);
+app.use("api/auth", authRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Página no encontrada." });
